@@ -4,7 +4,23 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
+MEC = 80
+MTC = 200
 TOTAL_HOURS = 7 * 24
+
+# Precision
+INCREMENT = None
+NUM_POINTS = 20
+
+if INCREMENT:
+    # computes how many values of d and delta_t will be tested
+    NUM_POINTS = TOTAL_HOURS / INCREMENT
+
+T_PRECISION = 5000  # how many times along the t-axis will be plugged into the function
+
+# Situation Bounds
+MIN_DOSAGE = 5
+MAX_DOSAGE = 500
 
 # Parameters
 p = 1  # proportion of usable drug
@@ -44,8 +60,11 @@ if __name__ == '__main__':
     # consider 5000 points across the first 100 hours
     times = np.linspace(0, TOTAL_HOURS, 5000)
     concs = C(times)
+    mec_line = MEC * np.ones(T_PRECISION)
+    mtc_line = MTC * np.ones(T_PRECISION)
 
-    # TODO plot horizontal lines for mec and mtc
-
-    plt.plot(times, concs)
+    plt.plot(times, concs, label='Concentration')
+    plt.plot(times, mec_line, linestyle='--', label='MEC')
+    plt.plot(times, mtc_line, linestyle='--', label='MTC')
+    plt.legend()
     plt.show()
