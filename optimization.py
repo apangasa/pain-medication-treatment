@@ -29,7 +29,7 @@ MAX_DOSAGE = 500
 
 # Parameters
 p = 1  # proportion of usable drug
-r = 0.25  # rate of drug absorption into the blood
+r = 0.5  # rate of drug absorption into the blood
 
 
 def case_2(treatments):
@@ -58,9 +58,6 @@ def case_2(treatments):
                     bar.update(1)
                     continue
                 e_matrix[i, j] = sum(map(lambda x: x >= MEC and x <= MTC, c))
-
-                if d == 106.0204081632653 and delta_t == 7.816326530612245:
-                    print(e_matrix[i, j])
 
                 if e_matrix[i, j] > max_effectiveness:
                     max_effectiveness = e_matrix[i, j]
@@ -99,9 +96,6 @@ def case_1(treatments):
             for j, delta_t in enumerate(delta_range):
                 T = np.arange(0, TOTAL_HOURS, delta_t)
                 c = C(times, T=T, d=d, p=p, r=r)
-
-                if d == 500 and delta_t == 1:
-                    print(c)
 
                 # if C ever exceeds MTC, throw out the treatment plan
                 if sum(map(lambda x: x > MTC, c)) > 0:
