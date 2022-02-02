@@ -1,6 +1,7 @@
 import warnings
 warnings.filterwarnings("ignore")
 import sys
+import json
 
 import numpy as np
 from scipy import integrate
@@ -14,7 +15,7 @@ TOTAL_HOURS = 7 * 24
 
 # Precision
 INCREMENT = None
-NUM_POINTS = 20
+NUM_POINTS = 50
 
 if INCREMENT:
     # computes how many values of d and delta_t will be tested
@@ -31,8 +32,12 @@ p = 1  # proportion of usable drug
 r = 0.25  # rate of drug absorption into the blood
 
 
-def case_2():
+def case_2(treatments):
     """Create effectiveness matrix for values of d and delta_t in the case where active duration defines quality. Runs at roughly 4-6it/s."""
+
+    if f'p={p} r={r}' in treatments['Case 2'].keys():
+        return treatments['Case 2'][f'p={p} r={r}']
+
     times = np.linspace(0, TOTAL_HOURS, T_PRECISION)
 
     d_range = np.linspace(MIN_DOSAGE, MAX_DOSAGE, NUM_POINTS)
@@ -53,6 +58,10 @@ def case_2():
                     bar.update(1)
                     continue
                 e_matrix[i, j] = sum(map(lambda x: x >= MEC and x <= MTC, c))
+
+                if d == 106.0204081632653 and delta_t == 7.816326530612245:
+                    print(e_matrix[i, j])
+
                 if e_matrix[i, j] > max_effectiveness:
                     max_effectiveness = e_matrix[i, j]
                     best_treatment = {
@@ -62,12 +71,18 @@ def case_2():
                     }
                 bar.update(1)
 
-    print(best_treatment)
+    treatments['Case 2'][f'p={p} r={r}'] = best_treatment
+
+    with open('./treatments.json', 'w') as treatment_file:
+        json.dump(treatments, treatment_file)
     return best_treatment
 
 
-def case_1():
+def case_1(treatments):
     """Create effectiveness matrix for values of d and delta_t in the case where active area defines quality. Runs at roughly 2-3it/s."""
+
+    if f'p={p} r={r}' in treatments['Case 1'].keys():
+        return treatments['Case 1'][f'p={p} r={r}']
 
     times = np.linspace(0, TOTAL_HOURS, T_PRECISION)
 
@@ -132,14 +147,24 @@ def case_1():
 
                 bar.update(1)
 
-    print(best_treatment)
+    treatments['Case 1'][f'p={p} r={r}'] = best_treatment
+
+    with open('./treatments.json', 'w') as treatment_file:
+        json.dump(treatments, treatment_file)
     return best_treatment
 
 
 if __name__ == '__main__':
+
+    with open('./treatments.json', 'r') as treatment_file:
+        treatments = json.load(treatment_file)
+
     if sys.argv[1] == '1':
-        case_1()
+        treatment = case_1(treatments)
     elif sys.argv[1] == '2':
-        case_2()
+        treatment = case_2(treatments)
     else:
         print('Invalid argument.')
+        sys.exit()
+
+    print(treatment)
