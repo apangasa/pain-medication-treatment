@@ -1,5 +1,6 @@
 import warnings
 warnings.filterwarnings("ignore")
+import sys
 
 import numpy as np
 from scipy import integrate
@@ -31,7 +32,7 @@ r = 0.25  # rate of drug absorption into the blood
 
 
 def case_1():
-    """Create effectiveness matrix for values of d and delta_t in the case where active duration defines quality. Runs at roughly 6it/s."""
+    """Create effectiveness matrix for values of d and delta_t in the case where active duration defines quality. Runs at roughly 4-6it/s."""
     times = np.linspace(0, TOTAL_HOURS, T_PRECISION)
 
     d_range = np.linspace(MIN_DOSAGE, MAX_DOSAGE, NUM_POINTS)
@@ -47,7 +48,7 @@ def case_1():
             for j, delta_t in enumerate(delta_range):
                 T = np.arange(0, TOTAL_HOURS, delta_t)
                 c = C(times, T=T, d=d, p=p, r=r)
-                if c.any() > MTC:
+                if sum(map(lambda x: x > MTC, c)) > 0:
                     e_matrix[i, j] = 0
                     bar.update(1)
                     continue
@@ -84,8 +85,11 @@ def case_2():
                 T = np.arange(0, TOTAL_HOURS, delta_t)
                 c = C(times, T=T, d=d, p=p, r=r)
 
+                if d == 500 and delta_t == 1:
+                    print(c)
+
                 # if C ever exceeds MTC, throw out the treatment plan
-                if c.any() > MTC:
+                if sum(map(lambda x: x > MTC, c)) > 0:
                     e_matrix[i, j] = 0
                     bar.update(1)
                     continue
@@ -129,9 +133,13 @@ def case_2():
                 bar.update(1)
 
     print(best_treatment)
-    print(max_effectiveness)
+    return best_treatment
 
 
 if __name__ == '__main__':
-    case_1()
-    # case_2()
+    if sys.argv[1] == '1':
+        case_1()
+    elif sys.argv[1] == '2':
+        case_2()
+    else:
+        print('Invalid argument.')
