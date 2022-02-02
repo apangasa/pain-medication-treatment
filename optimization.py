@@ -32,7 +32,7 @@ r = 0.25  # rate of drug absorption into the blood
 
 def case_1():
     """Create effectiveness matrix for values of d and delta_t in the case where active duration defines quality. Runs at roughly 6it/s."""
-    times = np.linspace(0, TOTAL_HOURS, 5000)
+    times = np.linspace(0, TOTAL_HOURS, T_PRECISION)
 
     d_range = np.linspace(MIN_DOSAGE, MAX_DOSAGE, NUM_POINTS)
     delta_range = np.linspace(1, TOTAL_HOURS, NUM_POINTS)
@@ -68,7 +68,7 @@ def case_1():
 def case_2():
     """Create effectiveness matrix for values of d and delta_t in the case where active area defines quality."""
 
-    times = np.linspace(0, TOTAL_HOURS, 5000)
+    times = np.linspace(0, TOTAL_HOURS, T_PRECISION)
 
     d_range = np.linspace(5, 500, NUM_POINTS)
     delta_range = np.linspace(1, TOTAL_HOURS, NUM_POINTS)
