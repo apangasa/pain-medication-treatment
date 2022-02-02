@@ -31,7 +31,7 @@ p = 1  # proportion of usable drug
 r = 0.25  # rate of drug absorption into the blood
 
 
-def case_1():
+def case_2():
     """Create effectiveness matrix for values of d and delta_t in the case where active duration defines quality. Runs at roughly 4-6it/s."""
     times = np.linspace(0, TOTAL_HOURS, T_PRECISION)
 
@@ -66,8 +66,8 @@ def case_1():
     return best_treatment
 
 
-def case_2():
-    """Create effectiveness matrix for values of d and delta_t in the case where active area defines quality."""
+def case_1():
+    """Create effectiveness matrix for values of d and delta_t in the case where active area defines quality. Runs at roughly 2-3it/s."""
 
     times = np.linspace(0, TOTAL_HOURS, T_PRECISION)
 
